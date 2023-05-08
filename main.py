@@ -13,9 +13,6 @@ new_log_path = os.path.join(current_dir, new_log_name)
 
 def create_new_log():
     with open(new_log_path, "w") as f:
-        f.write(now.strftime("# %Y/%m/%d Daily log"))
-        f.write("\n")
-        f.write("\n")
         f.write("## TODO List")
         f.write("\n")
         f.write("- [ ] 出勤打刻 & slack通知")
