@@ -27,6 +27,8 @@ def create_new_log():
         f.write("\n")
         f.write("## +αで達成できたら良いこと")
         f.write("\n")
+        f.write("## 宿題")
+        f.write("\n")
 
 def copy_yesterdays_log(src_file_path, dest_file_path):
     shutil.copy(src_file_path, dest_file_path)
