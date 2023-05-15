@@ -2,16 +2,7 @@ from datetime import datetime, timedelta
 import os
 import shutil
 
-current_dir = os.getcwd()
-now = datetime.now()
-yesterday = now - timedelta(1)
-
-yesterday_log_name = yesterday.strftime("%m_%d_%Y_log.md")
-new_log_name = now.strftime("%m_%d_%Y_log.md")
-yesterday_log_path = os.path.join(current_dir, yesterday_log_name)
-new_log_path = os.path.join(current_dir, new_log_name)
-
-def create_new_log():
+def create_new_log(new_log_path):
     with open(new_log_path, "w") as f:
         f.write("## TODO List")
         f.write("\n")
@@ -27,16 +18,34 @@ def create_new_log():
         f.write("\n")
         f.write("## +αで達成できたら良いこと")
         f.write("\n")
+        f.write("\n")
         f.write("## 宿題")
         f.write("\n")
 
-def copy_yesterdays_log(src_file_path, dest_file_path):
-    shutil.copy(src_file_path, dest_file_path)
+def copy_latest_log(src_log_path, dest_log_path):
+    shutil.copy(src_log_path, dest_log_path)
 
-def check_file_exists(file_path):
+def check_log_exists(file_path):
     return os.path.exists(file_path)
 
-if check_file_exists(yesterday_log_path):
-    copy_yesterdays_log(yesterday_log_path, new_log_path)
+def get_latest_log_path(searchDirPath):
+    latest_log_path = None
+    for filename in os.listdir(searchDirPath):
+        filepath = os.path.join(searchDirPath, filename)
+        if os.path.isfile(filepath):
+            if latest_log_path is None or os.path.getctime(filepath) > os.path.getctime(latest_log_path):
+                latest_log_path = filepath
+    return latest_log_path
+
+current_dir = os.getcwd()
+now = datetime.now()
+yesterday = now - timedelta(1)
+
+new_log_name = now.strftime("%m_%d_%Y_log.md")
+latest_log_path = get_latest_log_path(current_dir)
+new_log_path = os.path.join(current_dir, new_log_name)
+
+if latest_log_path is None:
+    create_new_log(new_log_path=new_log_path)
 else:
-    create_new_log()
+    copy_latest_log(src_log_path=latest_log_path, dest_log_path=new_log_path)
